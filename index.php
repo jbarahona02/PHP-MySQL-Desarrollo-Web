@@ -13,8 +13,26 @@ if (isset($_SESSION['error'])) {
 <html>
 <head>
    <title>Edición de registros en PHP + MySQL</title>
+
+   <style>
+      body {
+         font-family: Arial;
+      }
+
+      li {
+         font-size: 18px;
+      }
+   </style>
 </head>
 <body>
+
+   <h1>Integrantes de grupo</h1>
+   <ul>
+      <li>José Enrique Salazar Bobadilla | 5190-21-893</li>
+      <li>Javier Alejandro Barahona Pasán | 5190-21-3152</li>
+      <li>Raúl Alfonso Galdámez Orellana | 5190-21-3565</li>
+   </ul>
+
    <h1>PHP + MySQL</h1>
 
    <form action="insertar_db.php" method="post">
@@ -35,7 +53,7 @@ if (isset($_SESSION['error'])) {
    <?php if (!empty($message)) : ?>
       <p style="color:red;"><?php echo $message; ?></p>
    <?php endif; ?>
-   
+
    <hr>
    <!-- Código para mostrar la tabla de registros -->
    <?php

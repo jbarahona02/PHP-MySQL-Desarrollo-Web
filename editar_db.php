@@ -53,6 +53,12 @@ if (isset($_GET['id'])) {
 <html>
 <head>
    <title>Editar registro en PHP + MySQL</title>
+   
+   <style>
+      body {
+         font-family: Arial;
+      }
+   </style>
 </head>
 <body>
    <h1>Editar Registro</h1>
