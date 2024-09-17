@@ -1,10 +1,23 @@
+<?php
+include("libreria_db.php");
+session_start();  // Iniciar la sesión para acceder al mensaje
+
+// Verificar si hay un mensaje de error en la sesión
+$message = "";
+if (isset($_SESSION['error'])) {
+    $message = $_SESSION['error'];
+    unset($_SESSION['error']);  // Limpiar el mensaje de la sesión después de mostrarlo
+}
+?>
+
 <html>
 <head>
    <title>Edición de registros en PHP + MySQL</title>
 </head>
 <body>
    <h1>PHP + MySQL</h1>
-   <form action="insertar_db.php">
+
+   <form action="insertar_db.php" method="post">
       <table>
          <tr>
             <td>Nombre:</td>
@@ -17,12 +30,16 @@
       </table>
       <input type="submit" name="accion" value="Grabar">
    </form>
+   
+   <!-- Mostrar mensaje de error si existe -->
+   <?php if (!empty($message)) : ?>
+      <p style="color:red;"><?php echo $message; ?></p>
+   <?php endif; ?>
+   
    <hr>
    <!-- Código para mostrar la tabla de registros -->
    <?php
-      include("libreria_db.php");
-
-      $stmt = $pdo->query("SELECT per_nombre, per_edad, per_id  FROM tra_persona");
+      $stmt = $pdo->query("SELECT per_nombre, per_edad, per_id FROM tra_persona");
    ?>
    <table border=1 cellspacing=1 cellpadding=1>
       <tr>

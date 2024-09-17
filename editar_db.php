@@ -1,53 +1,52 @@
 <?php
 include("libreria_db.php");
 
+$message = "";  // Variable para almacenar mensajes
+
 // Bloque para procesar la actualización cuando se envía el formulario
 if (isset($_POST['accion']) && $_POST['accion'] == 'Actualizar') {
     $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $edad = $_POST['edad'];
 
-    // Verificar si se proporcionaron datos válidos
-    if (!empty($nombre) && !empty($edad) && !empty($id)) {
-        // Consulta para actualizar el registro
-        $stmt = $pdo->prepare("UPDATE tra_persona SET per_nombre = :nom, per_edad = :edad WHERE per_id = :id");
+    // Verificar si el ID no está vacío
+    if (!empty($id)) {
+        $query = "UPDATE tra_persona SET per_nombre = :nom, per_edad = :edad WHERE per_id = :id";
+        $stmt = $pdo->prepare($query);
 
-        // Usamos htmlentities para escapar los valores antes de pasarlos
-        $stmt->execute(array(
-            ':nom' => htmlentities($nombre), // Sanitizar el nombre
-            ':edad' => htmlentities($edad),  // Sanitizar la edad
-            ':id' => $id                     // El ID no necesita htmlentities porque es un número
-        ));
-
-        echo "Registro actualizado con éxito";
+        // Preparar el array de parámetros para ejecutar la consulta
+        $params = [':id' => $id];
+        if (!empty($nombre) && !empty($edad)) {
+            $params[':nom'] = htmlentities($nombre);
+            $params[':edad'] = htmlentities($edad);
+                // Ejecutar la consulta de actualización
+            $stmt->execute($params);
+            // Redirigir al index después de la actualización exitosa
+            header("Location: index.php");
+            exit();
+        } else {
+            $message = "Debes ingresar el nombre y la edad.";
+        }
     } else {
-        echo "Todos los campos son obligatorios";
+        $message = "ID no proporcionado.";
     }
-
-    // Redirigir de nuevo al index.php para ver los cambios
-    header("Location: index.php");
-    exit();
 }
 
-// Bloque para cargar los datos en el formulario si se accede con un ID
+// Bloque para recuperar el registro a editar y rellenar el formulario
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Preparar la consulta para obtener los datos del registro
-    $stmt = $pdo->prepare("SELECT per_nombre, per_edad FROM tra_persona WHERE per_id = ?");
-    $stmt->execute([$id]);
+    // Consulta para obtener el registro
+    $stmt = $pdo->prepare("SELECT per_nombre, per_edad FROM tra_persona WHERE per_id = :id");
+    $stmt->execute([':id' => $id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($row) {
         $nombre = $row['per_nombre'];
         $edad = $row['per_edad'];
     } else {
-        echo "Registro no encontrado";
-        exit;
+        $message = "Registro no encontrado.";
     }
-} else {
-    echo "ID no proporcionado";
-    exit();
 }
 ?>
 
@@ -57,6 +56,8 @@ if (isset($_GET['id'])) {
 </head>
 <body>
    <h1>Editar Registro</h1>
+   
+  
    <form action="editar_db.php" method="post">
       <table>
          <tr>
@@ -68,8 +69,17 @@ if (isset($_GET['id'])) {
             <td><input type="text" name="edad" size="20" maxlength="30" value="<?php echo htmlentities($edad); ?>"></td>
          </tr>
       </table>
-      <input type="hidden" name="id" value="<?php echo $id; ?>">
-      <input type="submit" name="accion" value="Actualizar">
+      <input type="hidden" name="id" value="<?php echo htmlentities($id); ?>">
+
+       <!-- Mostrar mensaje debajo del formulario si existe -->
+        <?php if (!empty($message)) : ?>
+            <p style="color:red; margin-top: 5px"><?php echo $message; ?></p>
+        <?php endif; ?>
+      <input type="submit" name="accion" value="Actualizar" style="margin-top: 10px">
+   </form>
+   <!-- Botón de regresar -->
+   <form action="index.php">
+       <button type="submit">Regresar</button>
    </form>
 </body>
 </html>
