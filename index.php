@@ -43,7 +43,7 @@ if (isset($_SESSION['error'])) {
          </tr>
          <tr>
             <td>Edad:</td>
-            <td><input type="text" name="edad" size="20" maxlength="30"></td>
+            <td><input type="number" name="edad" size="20" maxlength="30"></td>
          </tr>
       </table>
       <input type="submit" name="accion" value="Grabar">

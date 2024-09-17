@@ -72,7 +72,7 @@ if (isset($_GET['id'])) {
          </tr>
          <tr>
             <td>Edad:</td>
-            <td><input type="text" name="edad" size="20" maxlength="30" value="<?php echo htmlentities($edad); ?>"></td>
+            <td><input type="number" name="edad" size="20" maxlength="30" value="<?php echo htmlentities($edad); ?>"></td>
          </tr>
       </table>
       <input type="hidden" name="id" value="<?php echo htmlentities($id); ?>">
